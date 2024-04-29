@@ -34,7 +34,19 @@ async function run() {
         const craftCollection = database.collection("craftItems");
         const subCatagoryCollection = database.collection("subcatagories")
         const curoselCollection = database.collection("sliderdata")
+        const testimonialCollection = database.collection("testimonials")
 
+
+        app.get('/curosel', async (req, res) => {
+            const cursor = curoselCollection.find();
+            const curosel = await cursor.toArray()
+            res.send(curosel)
+        })
+        app.get('/testimonials', async (req, res) => {
+            const cursor = testimonialCollection.find();
+            const testimonials = await cursor.toArray();
+            res.send(testimonials)
+        })
 
 
 
@@ -43,11 +55,17 @@ async function run() {
             const crafts = await cursor.toArray()
             res.send(crafts)
         })
-        app.get('/curosel', async (req, res) => {
-            const cursor = curoselCollection.find();
-            const curosel = await cursor.toArray()
-            res.send(curosel)
+        app.get('/crafts/latest', async (req, res) => {
+            const cursor = craftCollection.find().sort({ _id: -1 }).limit(6);
+            const crafts = await cursor.toArray()
+            res.send(crafts)
         })
+        app.get('/crafts/toprated', async (req, res) => {
+            const cursor = craftCollection.find().sort({ rating: -1 }).limit(3);
+            const crafts = await cursor.toArray()
+            res.send(crafts)
+        })
+
         app.get('/crafts/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
@@ -80,14 +98,6 @@ async function run() {
         })
         app.post('/crafts', async (req, res) => {
             const craft = req.body;
-            const subCatagory = craft.sub_catagory
-            // console.log(subCatagory)
-            const query = { sub_catagory: subCatagory }
-            const subCatagoryItems = await craftCollection.find(query).toArray();
-
-            if (subCatagoryItems.length < 1) {
-                await subCatagoryCollection.insertOne(craft)
-            }
             const result = await craftCollection.insertOne(craft);
             res.send(result)
         })
