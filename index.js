@@ -11,7 +11,7 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.send('Server is running ok')
+    res.send('Welcome to assignment 10 Server. The server is running ok')
 })
 // console.log(username, password)
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -29,7 +29,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         const database = client.db("craftDB");
         const craftCollection = database.collection("craftItems");
         const subCatagoryCollection = database.collection("subcatagories")
